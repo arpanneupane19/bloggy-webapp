@@ -1,0 +1,18 @@
+body {
+    background-color: white;
+}
+
+.header{
+    text-align: center;
+    margin-top: 150px;
+}
+
+.download-link{
+    text-align: center;
+    text-decoration: none;
+
+}
+
+.download-link a{
+    text-decoration: none;
+}
