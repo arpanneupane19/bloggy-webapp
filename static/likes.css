@@ -1,0 +1,20 @@
+.container {
+  margin-top: 30px;
+  margin-left: 50px;
+  margin-right: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.like {
+  border-radius: 7px;
+  box-shadow: 0px 10px 30px rgba(48, 48, 48, 0.25);
+  overflow: auto;
+  padding: 10px;
+  margin-bottom: 25px;
+}
+
+.liker > a {
+  color: rgb(0, 140, 255);
+}

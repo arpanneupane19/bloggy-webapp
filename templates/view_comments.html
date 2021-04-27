@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel='stylesheet' href="{{url_for('static', filename='comments.css')}}">
+
+
+<div class="container">
+    <div class="header">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <h2>Comments</h2><br>
+    </div>
+
+
+    {% if total == 0 %}
+    <p>No comments yet.</p>
+    {% else %}
+    <div class="comments">
+        {% for comment in comments %}
+        <div class="comment">
+            <div class="commenter"><a
+                    href="{{url_for('user', username=comment.commenter.username)}}">{{comment.commenter.username}}</a>
+            </div><br>
+            <div>
+                <p>{{comment.comment_body}}</p>
+            </div><br>
+            <div>
+                <a href="{{ url_for('delete_comment', comment_id=comment.id, post_id=comment.commented.id) }}">Delete
+                    Comment</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+    {% endblock %}
+</div>

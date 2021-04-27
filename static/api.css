@@ -1,0 +1,122 @@
+.container {
+  margin-top: 30px;
+  margin-left: 100px;
+  margin-right: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.api-info {
+  margin-bottom: 40px;
+}
+
+.api {
+  color: rgb(0, 140, 255);
+  cursor: pointer;
+}
+
+.api-modal {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.1s;
+}
+
+.bg-active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal {
+  border-radius: 16px;
+  background-color: #fff;
+  width: 20%;
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal .top {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.modal .top > h3 {
+  text-align: center;
+  margin-left: 15px;
+}
+
+.modal .top > span {
+  margin-right: 15px;
+  font-size: larger;
+  cursor: pointer;
+}
+
+.modal > hr {
+  height: 1px;
+  border: 0;
+  background-color: lightgray;
+  margin-bottom: 15px;
+}
+
+.api-url > a {
+  color: rgb(0, 140, 255);
+}
+
+.api-url {
+  margin-bottom: 20px;
+}
+
+.modal > p {
+  text-align: center;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .modal {
+    width: 40%;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .container {
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+  .modal {
+    width: 50%;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .container {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .modal {
+    width: 80%;
+  }
+}
+
+@media (max-width: 319px) {
+  .container {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .modal {
+    width: 90%;
+  }
+}

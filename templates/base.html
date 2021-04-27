@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' href="{{url_for('static', filename='base.css')}}">
+    <title>Bloggy - {{title}}</title>
+</head>
+
+<body>
+    <header>
+        <label class="logo">Bloggy</label>
+        <nav>
+            <ul class='nav__links'>
+                {% if current_user.is_authenticated %}
+                <li><a href="{{url_for('dashboard')}}">Feed</a></li>
+                <li><a href="{{url_for('inbox')}}">Inbox</a></li>
+                <li><a href="{{url_for('create_post')}}">Post</a></li>
+                <li><a href="{{url_for('account')}}">Account</a></li>
+                <li><a href="{{url_for('logout')}}">Logout</a></li>
+                {% else %}
+                <li><a href="{{url_for('home')}}">Home</a></li>
+                <li><a href="{{url_for('login')}}">Login</a></li>
+                <li><a href="{{url_for('login')}}">Sign Up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock content %}
+    </main>
+</body>
+
+</html>

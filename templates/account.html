@@ -1,0 +1,42 @@
+{% extends "base.html" %}{% block
+title %}{% endblock %} {% block content %}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="{{url_for('static', filename='account.css')}}" />
+
+<div class="container">
+    <h2>My Account</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+    <form method="POST" action="" enctype="multipart/form-data">
+        <div class="basic-user-info">
+            <div class="img-and-name">
+                <img src="../static/profile_pics/{{current_user.profile_pic}}" />
+                {% if current_user.verified == True %}
+                <h2>{{current_user.username}} ✅</h2>
+                {% else %}
+                <h2>{{current_user.username}}</h2>
+                {% endif %}
+            </div>
+            <div class="num-of-posts">
+                {% if posts == 1 %}
+                <p>{{posts}} post</p>
+                {% else %}
+                <p>{{posts}} posts</p>
+                {% endif %}
+            </div>
+        </div><br>
+        <a href="{{url_for('user', username=current_user.username)}}">View Profile</a>
+        {{ form.hidden_tag ()}} {{ form.email}} {{ form.username}} {{
+        form.profile_pic}} {{ form.bio}} {{ form.submit}}
+        <p class="change-pw">
+            Change Password? <a href="changepassword">Click here.</a>
+        </p>
+        <a class="use-api" href="{{ url_for('use_api')}}">Use the Bloggy Basic User API</a>
+        <a href="{{ url_for('delete_account')}}">Delete my Bloggy account.</a>
+    </form>
+</div>
+
+{% endblock %}

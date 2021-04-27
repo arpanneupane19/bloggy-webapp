@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+{% block content %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel='stylesheet' href="{{url_for('static', filename='user.css')}}">
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="user-info">
+        <div class="wrapper">
+            <div class="name-and-image">
+                <img src="../static/profile_pics/{{user.profile_pic}}">
+                {% if user.verified == True %}
+                <h2>{{user.username}} ✅</h2>
+                {% else %}
+                <h2>{{user.username}}</h2>
+                {% endif %}
+                {% if current_user.username == user.username %}
+                {% else %}
+                <a href="{{url_for('messaging', user=user.username)}}">Message</a>
+                {% endif %}
+            </div><br>
+            {% if followers_total == 1 %}
+            <div class='followers-view'>
+                <p class='view-followers'>{{followers_total}} follower</p>
+            </div>
+            {% elif followers_total == 0 %}
+            <p>{{followers_total}} followers</p>
+            {% elif followers_total > 1 %}
+            <div class='followers-view'>
+                <p class='view-followers'>{{followers_total}} followers</p>
+            </div>
+            {% endif %}
+
+
+            {% if current_user.username == user.username %}
+            {% else %}
+            {% if current_user.has_followed_user(user) %}
+            <div class='follow-actions'><a
+                    href="{{ url_for('follow_action', action='unfollow', username=user.username)}}">Unfollow</a>
+            </div>
+            {% else %}
+            <div class='follow-actions'><a
+                    href="{{ url_for('follow_action', action='follow', username=user.username)}}">Follow</a>
+            </div>
+            {% endif %}
+            {% endif %}
+            <br>
+
+            {% if user.bio_content == None %}
+            <p>No bio yet.</p>
+            {% else %}
+            <p>{{ user.bio_content }}</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+
+    <div class="feed">
+        {% for post in posts.items %}
+        <div class="post">
+            <div class="post-info">
+                <small><a href="{{url_for('user', username=post.author.username)}}">{{post.author.username}}</a></small>
+                <small>{{post.post_date.strftime('%m/%d/%Y') }}</small>
+            </div><br>
+
+            <article class="post-title-content">
+                <h4><a href="{{url_for('post', post_id=post.id)}}">{{post.post_title}}</a></h4>
+                <p>{{post.post_content}}</p>
+            </article><br>
+
+            <div class="post-actions">
+                <div class="post-stats-info">
+                    {% if post.likes.count() == 1 %}
+                    <p>
+                        <a href="{{url_for('view_likes', post_id=post.id)}}">{{post.likes.count()}} like</a>
+                    </p>
+                    {% else %}
+                    <p>
+                        <a href="{{url_for('view_likes', post_id=post.id)}}">{{post.likes.count()}} likes</a>
+                    </p>
+                    {% endif %}
+
+                    {% if post.commented.count() == 1 %}
+                    <p><a href="{{url_for('view_comments', post_id=post.id)}}">{{post.commented.count()}}
+                            comment</a>
+                    </p>
+                    {% else %}
+                    <p><a href="{{url_for('view_comments', post_id=post.id)}}">{{post.commented.count()}}
+                            comments</a>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+
+            <div class="actions">
+                {% if current_user.has_liked_post(post) %}
+                <p><a href="{{url_for('like_post', action='unlike', post_id=post.id)}}">Unlike</a></p>
+                {% else %}
+                <p><a href="{{url_for('like_post', action='like', post_id=post.id)}}">Like</a></p>
+                {% endif %}
+
+                <p><a href="{{url_for('comment_on_post', post_id=post.id)}}">Comment</a></p>
+            </div>
+        </div>
+        {% endfor %}
+    </div><br>
+
+
+    <div class="paginate">
+        {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+        {% if posts.page == page_num %}
+        <a class='btn btn-info mb-4' href="{{ url_for('user', username=user.username, page=page_num)}}">{{ page_num
+            }}</a>
+        {% else %}
+        <a class='btn btn-outline-info mb-4' href="{{ url_for('user', username=user.username, page=page_num)}}">{{
+            page_num }}</a>
+        {% endif %}
+        {% else %}
+        ...
+        {% endif %}
+        {% endfor %}
+    </div>
+
+
+</div>
+
+
+<div id='followers-modal' class='followers-modal'>
+    <div class="modal">
+        <div class="top">
+            <h3>Followers</h3>
+            <span class="close-modal">&times;</span>
+        </div>
+        <hr>
+        {% for follow in followers %}
+        <div class="follower">
+            <p><a href="{{url_for('user', username=follow.follower.username)}}">{{follow.follower.username}}</a></p>
+        </div><br>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="{{url_for('static', filename='user.js')}}"></script>
+{% endblock %}

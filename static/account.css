@@ -1,0 +1,100 @@
+a {
+  color: rgb(0, 140, 255);
+  font-size: smaller;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.container > form {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  width: 40%;
+  box-shadow: 0px 10px 30px rgba(48, 48, 48, 0.25);
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+form > input {
+  margin-top: 10px;
+  padding: 8px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+}
+
+form > input:focus {
+  outline: none;
+}
+
+form > textarea {
+  margin-top: 8px;
+  padding: 10px;
+  max-width: 100%;
+  min-width: 100%;
+  min-height: 40px;
+  max-height: 150px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+}
+
+form > textarea:focus {
+  outline: none;
+}
+
+form > input[type="submit"] {
+  cursor: pointer;
+  border: none;
+  background: rgb(0, 140, 255);
+  color: white;
+  margin-bottom: 10px;
+}
+
+.basic-user-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.basic-user-info .img-and-name {
+  display: flex;
+  align-items: center;
+}
+
+.img-and-name > img {
+  width: 30px;
+  margin-right: 5px;
+  height: 30px;
+  object-fit: contain;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.change-pw {
+  margin-bottom: 10px;
+}
+
+.use-api {
+  margin-bottom: 10px;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .container > form {
+    width: 52%;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .container > form {
+    width: 70%;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .container > form {
+    width: 80%;
+  }
+}

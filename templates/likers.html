@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel='stylesheet' href="{{url_for('static', filename='likes.css')}}">
+
+
+<div class="container">
+    <div class="header">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <h2>Likes</h2><br>
+    </div>
+
+    <div class="likers">
+        {% for like in likes %}
+        <div class="like">
+            <div class="liker">Liked by <a
+                    href="{{url_for('user', username=like.liker.username)}}">{{like.liker.username}}</a></div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% endblock %}
+</div>

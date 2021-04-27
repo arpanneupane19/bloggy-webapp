@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+{% block content %}
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+    integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+    integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+    crossorigin="anonymous"></script>
+<link rel='stylesheet' href="{{url_for('static', filename='message.css')}}" />
+
+
+<div class="chat-container">
+    <div class="messages-box">
+        <div class="header">
+            <h2>Messages - {{receiver.username}}</h2>
+            <a class='leave' href="{{ url_for('inbox') }}">Leave</a>
+        </div>
+        <div class="messages">
+            {% if num_of_messages == 0 %}
+            <div class="message-received" style='width: 100%'>
+                <p>This is your conversation with {{receiver.username}}, send a text to start the conversation!</p>
+            </div>
+            {% else %}
+            {% for message in messages%}
+            {% if message.sender == current_user %}
+            <div class="message-sent">
+                <div>
+                    {{message.time}}
+                </div>
+                <p>{{message.sender.username}}: {{message.message}}</p>
+            </div>
+            {% else %}
+            <div class="message-received">
+                <div>
+                    {{message.time}}
+                </div>
+                <p>{{message.sender.username}}: {{message.message}}</p>
+            </div>
+            {% endif %}
+            {% endfor %}
+
+            {% endif %}
+        </div>
+        <input id='message' type='text' placeholder='Enter in a message' required autocomplete="off" />
+        <button id='send'>Send</button>
+    </div>
+</div>
+
+<p class='username' style='visibility: hidden;'>{{current_user.username}}</p>
+<p class='receiver' style='visibility: hidden;'>{{receiver.username}}</p>
+
+
+<script src="{{ url_for('static', filename='message.js') }}"></script>
+{% endblock %}

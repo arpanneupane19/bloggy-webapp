@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block head %}{% endblock %}
+{% block content %}
+<link rel='stylesheet' href="{{url_for('static', filename='home.css')}}">
+
+<div class="container">
+    <div class="intro">
+        <figcaption>Welcome to Bloggy!</figcaption>
+        <h1>A platform for blog posting.</h1>
+        <a href="{{url_for('login')}}">Sign up now.</a>
+    </div>
+
+</div>
+{% endblock %}

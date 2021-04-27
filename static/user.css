@@ -1,0 +1,253 @@
+.container {
+  margin-top: 30px;
+  margin-left: 170px;
+  margin-right: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 7px;
+  box-shadow: 0px 10px 30px rgba(48, 48, 48, 0.25);
+  width: 45%;
+  height: 150px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.followers-view > p {
+  color: rgb(0, 140, 255);
+  cursor: pointer;
+}
+
+.name-and-image {
+  display: flex;
+  flex-direction: column;
+}
+
+.name-and-image img {
+  width: 50px;
+  object-fit: contain;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.followers-modal {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.1s;
+}
+
+.bg-active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal {
+  border-radius: 16px;
+  background-color: #fff;
+  width: 23%;
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
+.modal .top {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.modal .top > h3 {
+  text-align: center;
+  margin-left: 15px;
+}
+
+.modal .top > span {
+  margin-right: 15px;
+  font-size: larger;
+  cursor: pointer;
+}
+
+.modal > hr {
+  height: 1px;
+  border: 0;
+  background-color: lightgray;
+  margin-bottom: 15px;
+}
+
+.follower {
+  margin-left: 15px;
+}
+
+.follower > p {
+  font-size: smaller;
+}
+
+.follower > p > a {
+  color: rgb(0, 140, 255);
+  cursor: pointer;
+}
+
+.follower > p > a:hover {
+  text-decoration: underline;
+}
+#view-followers {
+  color: rgb(0, 140, 255);
+  cursor: pointer;
+}
+
+.follow-actions > a {
+  color: rgb(0, 140, 255);
+}
+.feed {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 7px;
+  box-shadow: 0px 10px 30px rgba(48, 48, 48, 0.25);
+  width: 45%;
+  height: 190px;
+  max-height: 190px;
+  overflow-y: auto;
+  margin-right: 12px;
+  margin-bottom: 20px;
+}
+
+.post-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post-info a {
+  color: rgb(0, 140, 255);
+}
+
+.post-stats-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post-stats-info a {
+  color: rgb(0, 140, 255);
+}
+
+.post-stats-info p {
+  color: rgb(0, 140, 255);
+  cursor: pointer;
+}
+
+.post-title-content a {
+  color: rgb(0, 140, 255);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.actions a {
+  color: rgb(0, 140, 255);
+}
+
+.paginate > a {
+  margin-right: 5px;
+  border-radius: 4px;
+  border: 1px solid lightgray;
+  color: rgb(0, 140, 255);
+  padding: 10px;
+}
+
+.paginate > a:hover {
+  transition: 0.2s;
+  background: rgb(0, 140, 255);
+  color: white;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .wrapper {
+    width: 90%;
+  }
+
+  .post {
+    width: 90%;
+  }
+  .modal {
+    width: 40%;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .container {
+    margin-left: 60px;
+    margin-right: 10px;
+  }
+  .wrapper {
+    width: 90%;
+  }
+
+  .post {
+    width: 90%;
+  }
+
+  .modal {
+    width: 50%;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .container {
+    margin-left: 30px;
+    margin-right: 10px;
+  }
+  .wrapper {
+    width: 95%;
+  }
+
+  .post {
+    width: 95%;
+  }
+
+  .modal {
+    width: 80%;
+  }
+}
+
+@media (max-width: 319px) {
+  .container {
+    margin-left: 20px;
+    margin-right: 5px;
+  }
+  .wrapper {
+    width: 100%;
+  }
+
+  .post {
+    width: 100%;
+  }
+  .modal {
+    width: 90%;
+  }
+}
