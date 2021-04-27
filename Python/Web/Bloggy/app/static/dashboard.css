@@ -1,0 +1,180 @@
+.container {
+  margin-top: 30px;
+  margin-left: 100px;
+  margin-right: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form > form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.form > form > input {
+  height: 35px;
+  padding: 7px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  width: 80%;
+  margin-right: 10px;
+}
+
+.form > form > input:focus {
+  outline: none;
+}
+
+.form > form > button {
+  background-color: rgb(0, 140, 255);
+  height: 35px;
+  padding: 7px;
+  border-radius: 4px;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.feed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 7px;
+  box-shadow: 0px 10px 30px rgba(48, 48, 48, 0.25);
+  width: 45%;
+  height: 190px;
+  max-height: 190px;
+  overflow-y: auto;
+  margin-right: 12px;
+  margin-bottom: 20px;
+}
+
+.specific-post {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.update-and-delete > p {
+  font-size: larger;
+}
+
+.post-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post-info a {
+  color: rgb(0, 140, 255);
+}
+
+.post-stats-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post-stats-info a {
+  color: rgb(0, 140, 255);
+}
+
+.post-stats-info p {
+  color: rgb(0, 140, 255);
+  cursor: pointer;
+}
+
+.post-title-content a {
+  color: rgb(0, 140, 255);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.actions a {
+  color: rgb(0, 140, 255);
+}
+
+.paginate > a {
+  margin-right: 5px;
+  border-radius: 4px;
+  border: 1px solid lightgray;
+  color: rgb(0, 140, 255);
+  padding: 10px;
+}
+
+.paginate > a:hover {
+  transition: 0.2s;
+  background: rgb(0, 140, 255);
+  color: white;
+}
+
+.header {
+  margin-left: 55px;
+  margin-right: 55px;
+}
+
+.liker {
+  margin-left: 15px;
+}
+
+.liker > a {
+  font-size: smaller;
+}
+
+.liker > a {
+  color: rgb(0, 140, 255);
+}
+
+.liker > a:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .post {
+    width: 90%;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .container {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .post {
+    width: 90%;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  .container {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .post {
+    width: 90%;
+  }
+}
+
+@media (max-width: 319px) {
+  .container {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  .post {
+    width: 95%;
+  }
+}
+.update-and-delete {
+  font-size: smaller;
+}

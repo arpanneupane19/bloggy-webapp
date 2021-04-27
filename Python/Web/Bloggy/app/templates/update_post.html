@@ -1,0 +1,15 @@
+{% extends "base.html" %} {% block
+title %}{% endblock %} {% block content %}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="{{url_for('static', filename='forms.css')}}" />
+
+<div class="container">
+    <form method="POST" action="">
+        <h2>Update Post</h2>
+        {{form.hidden_tag() }} {{(form.post_title)}} {{(form.post_content)}}
+        {{(form.submit)}}
+    </form>
+</div>
+
+{% endblock %}

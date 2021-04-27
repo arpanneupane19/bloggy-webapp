@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+{% block content %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel='stylesheet' href="{{url_for('static', filename='api.css')}}">
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div class="header">
+        <h1>Use the Bloggy Basic User API</h1>
+    </div>
+    <div class="api-info">
+        <p>
+            The Bloggy Basic User API allows you to see some of your information and show that on other sites.
+            The API will give you access to the amount of followers you have, amount of users that you're following,
+            your username,
+            total number of posts you have made, and your User ID.
+        </p><br>
+        <p>To use it, you need an access token which is different for every user. If you change your email, the access
+            token will also change.</p>
+        <p>DO NOT GIVE OUT YOUR ACCESS TOKEN TO ANYONE UNLESS THEY ARE TRUSTED.</p>
+    </div>
+
+    <p class="api">View token</p>
+
+    <div id='api-modal' class='api-modal'>
+        <div class="modal">
+            <div class="top">
+                <h3>Token</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <hr>
+            <p class="api-url"><a href="{{url_for('api', token=current_user.access_token)}}" target="__blank">API
+                    URL</a></p>
+            <p>This URL will give you access to the data that was listed, you can use this URL on other sites to fetch
+                data from your Bloggy profile.</p>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script src="{{url_for('static', filename='useAPI.js')}}"></script>
+
+{% endblock %}

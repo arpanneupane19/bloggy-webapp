@@ -2,6 +2,12 @@
     "python.pythonPath": "/usr/local/bin/python3",
     "python.linting.banditEnabled": false,
     "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "git.ignoreLimitWarning": true,
+
+    "terminal.integrated.allowChords": false,
+    "terminal.integrated.drawBoldTextInBrightColors": false,
+    "terminal.integrated.experimentalLinkProvider": false,
+    "terminal.integrated.rendererType": "auto"
     
 }

@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% block
+title %}{% endblock %} {% block content %}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="{{url_for('static', filename='account.css')}}" />
+
+<div class="container">
+    <h2>Change Password</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+    <form method="POST" action="">
+        {{ form.hidden_tag() }} {{ form.email }} {{ form.current_password }} {{
+        form.new_password }} {{ form.submit }}
+    </form>
+</div>
+
+{% endblock %}

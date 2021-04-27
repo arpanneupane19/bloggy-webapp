@@ -1,4 +1,0 @@
-Right Arrow: Move Right
-Left Arrow: Move Left
-
-P: Pause Game

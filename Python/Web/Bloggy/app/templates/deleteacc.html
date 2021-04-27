@@ -1,0 +1,22 @@
+{% extends "base.html" %} {% block
+title %}{% endblock %} {% block content %}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="{{url_for('static', filename='account.css')}}" />
+
+<div class="container">
+    <h2>Delete My Account</h2>
+    <figcaption>We're sorry to see you go...</figcaption>
+    <form method="POST" action="">
+        {{ form.hidden_tag() }} {{ form.email}} {{ form.username}} {{form.password}}
+        {{ form.submit}}
+        <p>
+            When you click the "Delete My Account" button, that is an undoable action
+            and we are not responsible. Your posts, account, and any information
+            related to you on this app will be gone! Do at your own risk!
+            <a href="{{ url_for('account')}}">Cancel</a>
+        </p>
+    </form>
+</div>
+
+{% endblock %}

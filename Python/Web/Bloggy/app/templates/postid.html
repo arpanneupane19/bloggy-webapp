@@ -1,0 +1,80 @@
+{% extends "base.html" %} {% block title %}{% endblock %} {% block content %}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="{{url_for('static', filename='dashboard.css')}}" />
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+    <br />
+    <br />
+
+    <div class="specific-post">
+        <div class="post">
+            <div class="post-info">
+                <small><a href="{{url_for('user', username=post.author.username)}}">{{post.author.username}}</a></small>
+                <small>{{post.post_date.strftime('%m/%d/%Y') }}</small>
+            </div>
+            <br />
+
+            <article class="post-title-content">
+                <h4>
+                    <a href="{{url_for('post', post_id=post.id)}}">{{post.post_title}}</a>
+                </h4>
+                <p>{{post.post_content}}</p>
+            </article>
+            <br />
+
+            <div class="post-actions">
+                <div class="post-stats-info">
+                    {% if post.likes.count() == 1 %}
+                    <p>
+                        <a href="{{url_for('view_likes', post_id=post.id)}}">{{post.likes.count()}} like</a>
+                    </p>
+                    {% else %}
+                    <p>
+                        <a href="{{url_for('view_likes', post_id=post.id)}}">{{post.likes.count()}} likes</a>
+                    </p>
+                    {% endif %} {% if post.commented.count() == 1 %}
+                    <p>
+                        <a href="{{url_for('view_comments', post_id=post.id)}}">{{post.commented.count()}} comment</a>
+                    </p>
+                    {% else %}
+                    <p>
+                        <a href="{{url_for('view_comments', post_id=post.id)}}">{{post.commented.count()}} comments</a>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="actions">
+                {% if current_user.has_liked_post(post) %}
+                <p>
+                    <a href="{{url_for('like_post', action='unlike', post_id=post.id)}}">Unlike</a>
+                </p>
+                {% else %}
+                <p>
+                    <a href="{{url_for('like_post', action='like', post_id=post.id)}}">Like</a>
+                </p>
+                {% endif %}
+                <p>
+                    <a href="{{url_for('comment_on_post', post_id=post.id)}}">Comment</a>
+                </p>
+            </div>
+        </div>
+        {% if post.author == current_user %}
+        <div class="update-and-delete">
+            <p>
+                <a href="{{url_for('update_post', post_id=post.id)}}">Update</a> or
+                <a href="{{url_for('delete_post', post_id=post.id)}}">Delete</a>
+                post.
+            </p>
+        </div>
+        {% endif %}
+    </div>
+    <br />
+</div>
+
+{% endblock %}

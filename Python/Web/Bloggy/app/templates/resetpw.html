@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Reset Password{% endblock %}
+{% block head %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+{% endblock %}
+{% block content %}
+<div class="header">
+    <h1>Reset Your Password</h1>
+</div>
+
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    {{ wtf.form_field(form.email)}}
+    {{ wtf.form_field(form.password)}}
+    <button class="btn" type="submit">Submit</button>
+</form>
+
+
+
+
+
+{% endblock %}

@@ -1,4 +1,6 @@
 # Simple Snake Game in Python 3.8.0 for Beginners
+# By @arpanneupane19
+# Part 1: Getting Started
 
 import turtle
 import time
@@ -111,7 +113,7 @@ while True:
         delay = 0.1
 
         pen.clear()
-        pen.write(f"Score: {score}  High Score: {high_score}", align="center",font=("Courier", 24, "bold"))
+        pen.write("Score: {}  High Score: {}".format(score, high_score), align="center",font=("Courier", 24, "bold"))
     
     # Check for a collision with the food
     if head.distance(food) < 20:
@@ -181,7 +183,7 @@ while True:
 
         # Update the score display
         pen.clear()
-        pen.write(f"Score: {score}  High Score: {high_score}", align="center",font=("Courier", 24, "bold"))
+        pen.write("Score: {}  High Score: {}".format(score, high_score), align="center",font=("Courier", 24, "bold"))
 
     time.sleep(delay)
 
