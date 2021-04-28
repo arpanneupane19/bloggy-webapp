@@ -707,17 +707,19 @@ def inbox():
     received_messages = Message.query.filter_by(receiver=current_user).all()
     sent_messages = Message.query.filter_by(sender=current_user).all()
 
-    inbox_list = set()
+    inbox_list = []
 
     for message in received_messages:
         sender = message.sender
-        inbox_list.add(sender)
+        inbox_list.insert(0, sender)
 
     for message in sent_messages:
         receiver = message.receiver
-        inbox_list.add(receiver)
+        inbox_list.insert(0, receiver)
 
-    return render_template("inbox.html", title="Inbox", inbox_list=inbox_list, length=len(inbox_list))
+    inbox_set = set(inbox_list)
+
+    return render_template("inbox.html", title="Inbox", inbox_set=inbox_set, length=len(inbox_set))
 
 
 @socketio.on('connectUser')
