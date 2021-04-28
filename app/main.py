@@ -17,12 +17,16 @@ import secrets
 import hashlib
 from PIL import Image
 from flask_socketio import SocketIO, emit, send, join_room
+from flask_sslify import SSLify
 
 app = Flask(__name__)
+if 'DYNO' in os.environ:
+    SSLify(app)
 
 # Secret KEY is different in production
-app.config['SECRET_KEY'] = '60b610104da240c1aac4d521e8c09875'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 socketio = SocketIO(app, cors_allowed_origins='*')
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
@@ -877,7 +881,3 @@ def reset_password(token):
         flash('Your password has been updated! You are now able to log in', 'success')
         return redirect(url_for('home'))
     return render_template('resetpw.html', title='Reset Password', form=form)
-
-
-if __name__ == "__main__":
-    app.run()
