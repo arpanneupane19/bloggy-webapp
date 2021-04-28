@@ -38,6 +38,7 @@ socket.on('connect', () => {
 })
 
 messageField.addEventListener('keypress', (e) => {
+    messageField.trim()
     if (e.which === 13) {
         if (messageField.value.length !== 0) {
             socket.emit('chat', {
@@ -57,6 +58,7 @@ messageField.addEventListener('keypress', (e) => {
 })
 
 send.addEventListener('click', () => {
+    messageField.trim()
     if (messageField.value.length !== 0) {
         socket.emit('chat', {
             time: moment.format("h:mm a"),
