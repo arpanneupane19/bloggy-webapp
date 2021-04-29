@@ -10,7 +10,6 @@ const receiver = document.querySelector('.receiver').innerHTML
 let room = [sender, receiver];
 room.sort();
 let roomCode = room.toString()
-
 chatMessages.scrollTop = chatMessages.scrollHeight;
 
 
@@ -33,7 +32,10 @@ function outputMessage(message) {
 }
 
 socket.on('connect', () => {
-    socket.emit('connectUser', sender, roomCode)
+    socket.emit('connectUser', {
+        username: sender,
+        room: roomCode,
+    })
     console.log(`${sender} has connected.`)
 })
 
