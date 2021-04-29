@@ -134,6 +134,8 @@ class Message(db.Model):
     room = db.Column(db.String(), nullable=False)
     message = db.Column(db.String(), nullable=False)
     time = db.Column(db.String(), nullable=False)
+    message_time = db.Column(
+        db.DateTime(), nullable=False, default=datetime.utcnow)
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
@@ -723,13 +725,15 @@ def inbox():
 
 
 @socketio.on('connectUser')
-def connectUser(username, room):
+def connectUser(data):
     # This is event is for joining the user into the room when
     # they're trying to chat.
+    room = data['room']
+    username = data['username']
 
-    print(f'{username} has connected.')
+    print(f"{username} has connected.")
     join_room(room)
-    print('Joined room: ' + room)
+    print('Joined Room')
 
 
 @socketio.on('chat')
