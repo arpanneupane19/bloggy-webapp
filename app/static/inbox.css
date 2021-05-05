@@ -21,7 +21,7 @@
   border: 1px solid lightgray;
   border-radius: 4px;
   background: #fff;
-  height: 400px;
+  height: 300px;
   overflow-y: scroll;
   margin-bottom: 20px;
 }
@@ -37,7 +37,7 @@
   background: #f2f2f2;
 }
 
-.message-inbox > a {
+.message-inbox > p {
   color: black;
   margin-left: 10px;
 }
