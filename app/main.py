@@ -18,6 +18,7 @@ import hashlib
 from PIL import Image
 from flask_socketio import SocketIO, emit, send, join_room
 from flask_sslify import SSLify
+import json
 
 app = Flask(__name__)
 if 'DYNO' in os.environ:
@@ -25,7 +26,7 @@ if 'DYNO' in os.environ:
 
 # Secret KEY is different in production
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 socketio = SocketIO(app, cors_allowed_origins='*')
@@ -58,7 +59,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(50), unique=True)
-    password = db.Column(db.String(80))
+    password = db.Column(db.String())
     profile_pic = db.Column(
         db.String(40), nullable=False, default='default.jpg')
     posts = db.relationship('Post', backref='author', lazy='dynamic')
@@ -136,6 +137,7 @@ class Message(db.Model):
     time = db.Column(db.String(), nullable=False)
     message_time = db.Column(
         db.DateTime(), nullable=False, default=datetime.utcnow)
+    read = db.Column(db.Boolean())
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
@@ -179,7 +181,7 @@ class LoginForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired(), Length(
         min=4, max=50)], render_kw={"placeholder": "Username"})
     password = PasswordField("Password", validators=[InputRequired(), Length(
-        min=4, max=15)], render_kw={"placeholder": "Password"})
+        min=4)], render_kw={"placeholder": "Password"})
     submit = SubmitField("Login")
 
     def validate_username(self, username):
@@ -198,8 +200,8 @@ class RegisterForm(FlaskForm):
         message="Invalid Email"), Length(max=50)], render_kw={"placeholder": "Email Address"})
     username = StringField("Username", validators=[InputRequired(), Length(
         min=4, max=15)], render_kw={"placeholder": "Username"})
-    password = PasswordField("Password", validators=[InputRequired(), Length(
-        min=4, max=15)], render_kw={"placeholder": "Password"})
+    password = PasswordField(validators=[
+        InputRequired(), Length(min=4)], render_kw={"placeholder": "Password (Minimum of 4 characters)"})
     submit = SubmitField("Register")
 
     def validate_username(self, username):
@@ -250,17 +252,17 @@ class ForgotPasswordForm(FlaskForm):
 class ResetPasswordForm(FlaskForm):
     email = StringField(validators=[InputRequired(), Email(
         message="Invalid Email"), Length(max=50)], render_kw={"placeholder": "Email"})
-    password = PasswordField("Password", validators=[
-        InputRequired(), Length(min=4, max=15)])
+    password = PasswordField(validators=[
+        InputRequired(), Length(min=4)], render_kw={"placeholder": "Password (Minimum of 4 characters)"})
 
 
 class ChangePasswordForm(FlaskForm):
     email = StringField(validators=[InputRequired(), Email(
         message="Invalid Email"), Length(max=50)], render_kw={"placeholder": "Email"})
     current_password = PasswordField(validators=[InputRequired(), Length(
-        min=4, max=15)], render_kw={"placeholder": "Current Password"})
-    new_password = PasswordField(validators=[InputRequired(), Length(
-        min=4, max=15)], render_kw={"placeholder": "New Password"})
+        min=4)], render_kw={"placeholder": "Current Password"})
+    password = PasswordField(validators=[
+        InputRequired(), Length(min=4)], render_kw={"placeholder": "New Password (Minimum of 4 characters)"})
     submit = SubmitField("Change Password")
 
 
@@ -270,7 +272,7 @@ class DeleteAccountForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(
         min=4, max=15)], render_kw={"placeholder": "Username"})
     password = PasswordField(validators=[InputRequired(), Length(
-        min=4, max=15)], render_kw={"placeholder": "Password"})
+        min=4)], render_kw={"placeholder": "Password"})
     submit = SubmitField("Delete My Account")
 
 
@@ -688,6 +690,11 @@ def delete_account():
         return redirect('/admin')
     form = DeleteAccountForm()
     posts = Post.query.filter_by(author=current_user).all()
+    sent_messages = Message.query.filter_by(sender=current_user).all()
+    received_messages = Message.query.filter_by(receiver=current_user).all()
+    comments = Comment.query.filter_by(commenter=current_user).all()
+    likes = Like.query.filter_by(liker=current_user).all()
+    follows = Follower.query.filter_by(follower=current_user).all()
     user = User.query.filter_by(email=form.email.data).first()
     if form.validate_on_submit():
         if form.email.data != current_user.email or form.username.data != current_user.username:
@@ -696,6 +703,17 @@ def delete_account():
             return redirect(url_for('delete_account'))
         for post in posts:
             db.session.delete(post)
+        for message in sent_messages:
+            db.session.delete(message)
+        for message in received_messages:
+            db.session.delete(message)
+        for comment in comments:
+            db.session.delete(comment)
+        for like in likes:
+            db.session.delete(like)
+        for follow in follows:
+            db.session.delete(follow)
+
         db.session.delete(user)
         db.session.commit()
         flash('Your account has been deleted', 'success')
@@ -724,16 +742,72 @@ def inbox():
     return render_template("inbox.html", title="Inbox", inbox_set=inbox_set, length=len(inbox_set))
 
 
+# Map room to a list of users
+room_to_users = dict({})
+
+# Map username to a room
+user_to_room = dict({})
+
+
 @socketio.on('connectUser')
-def connectUser(data):
-    # This is event is for joining the user into the room when
-    # they're trying to chat.
+def connect_user(data):
+    # This is event is for joining the user into the room when they're trying to chat.
     room = data['room']
     username = data['username']
+    global room_to_users
+    global user_to_room
 
-    print(f"{username} has connected.")
+    if room in room_to_users.keys():
+        if username in room_to_users[room]:
+            print('exists')
+        else:
+            room_to_users[room].append(username)
+    if not room in room_to_users.keys():
+        room_to_users[room] = [username]
     join_room(room)
-    print('Joined Room')
+    user_to_room[username] = room
+    print(f'room to users: {room_to_users}')
+    print(f'user to room: {user_to_room}')
+
+    # IF there were previous messages, then it will query them by the room & receiver and set the read status to True
+    messages = Message.query.filter_by(room=room, receiver=current_user).all()
+
+    for i in room_to_users[room]:
+        for message in messages:
+            message.read = True
+            db.session.commit()
+
+
+@socketio.on('disconnect')
+def disconnect_user():
+    username = current_user.username
+    room = user_to_room.get(username)
+
+    # This is to remove the user(s) from the dictionary.
+    '''
+    I first check if they exist in the room or not,
+    if they do, I will iterate through the array of users in the room,
+    then for each index, if the value of the index is rqual to the current user's
+    username, then it will remove that user from the user_to_room dict. 
+    This will remove the user's name from the array as well as remove their name 
+    from the user_to_room dict.
+    '''
+
+    '''
+    After all of those checks, the app will check the length of the array to see 
+    how many people are in the room, if there are 0 people in the room, it will delete the room code
+    from the room_to_users dictionary.
+    '''
+    if username in room_to_users[room]:
+        for i in room_to_users[room]:
+            if i == username:
+                room_to_users[room].remove(i)
+                user_to_room.pop(username)
+                print(f'user to room: {user_to_room}')
+        if len(room_to_users[room]) == 0:
+            room_to_users.pop(room)
+        print(f'room to users: {room_to_users}')
+    print(f"{username} has disconnected from room {room}")
 
 
 @socketio.on('chat')
@@ -751,16 +825,24 @@ def chat(msg):
     # Time of the message
     time = msg['time']
 
+    read = False
+
     # Query the sender and receiver to see if they exist
     receiver = User.query.filter_by(username=message_receiver).first()
     sender = User.query.filter_by(username=message_sender).first()
 
     # Create new message object for adding message to db
-    new_message = Message(
-        room=room, time=time, message=msg['message'], sender=sender, receiver=receiver)
-    db.session.add(new_message)
-    db.session.commit()
+    if (len(room_to_users[room])) == 1:
+        new_message = Message(
+            room=room, read=False, time=time, message=msg['message'], sender=sender, receiver=receiver)
+        db.session.add(new_message)
+        db.session.commit()
 
+    if (len(room_to_users[room])) == 2:
+        new_message = Message(
+            room=room, read=True, time=time, message=msg['message'], sender=sender, receiver=receiver)
+        db.session.add(new_message)
+        db.session.commit()
     # send message to the people in the room.
     send(msg, room=room)
 
