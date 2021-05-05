@@ -134,7 +134,8 @@ input[type="radio"] {
   height: 100%;
   width: 100%;
   outline: none;
-  padding-left: 15px;
+  padding-left: 9px;
+  padding-right: 9px;
   font-size: 17px;
   border-radius: 5px;
   border: 1px solid lightgray;
