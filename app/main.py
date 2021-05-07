@@ -19,6 +19,7 @@ from PIL import Image
 from flask_socketio import SocketIO, emit, send, join_room
 from flask_sslify import SSLify
 import json
+from collections import deque
 
 app = Flask(__name__)
 if 'DYNO' in os.environ:
@@ -26,7 +27,7 @@ if 'DYNO' in os.environ:
 
 # Secret KEY is different in production
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 socketio = SocketIO(app, cors_allowed_origins='*')
@@ -201,7 +202,7 @@ class RegisterForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired(), Length(
         min=4, max=15)], render_kw={"placeholder": "Username"})
     password = PasswordField(validators=[
-        InputRequired(), Length(min=4)], render_kw={"placeholder": "Password (Minimum of 4 characters)"})
+        InputRequired(), Length(min=4)], render_kw={"placeholder": "Password (4 minimum)"})
     submit = SubmitField("Register")
 
     def validate_username(self, username):
@@ -253,7 +254,7 @@ class ResetPasswordForm(FlaskForm):
     email = StringField(validators=[InputRequired(), Email(
         message="Invalid Email"), Length(max=50)], render_kw={"placeholder": "Email"})
     password = PasswordField(validators=[
-        InputRequired(), Length(min=4)], render_kw={"placeholder": "Password (Minimum of 4 characters)"})
+        InputRequired(), Length(min=4)], render_kw={"placeholder": "Password (4 minimum)"})
 
 
 class ChangePasswordForm(FlaskForm):
@@ -262,7 +263,7 @@ class ChangePasswordForm(FlaskForm):
     current_password = PasswordField(validators=[InputRequired(), Length(
         min=4)], render_kw={"placeholder": "Current Password"})
     password = PasswordField(validators=[
-        InputRequired(), Length(min=4)], render_kw={"placeholder": "New Password (Minimum of 4 characters)"})
+        InputRequired(), Length(min=4)], render_kw={"placeholder": "New Password (4 minimum)"})
     submit = SubmitField("Change Password")
 
 
@@ -731,15 +732,19 @@ def inbox():
 
     for message in received_messages:
         sender = message.sender
-        inbox_list.insert(0, sender)
+        if sender in inbox_list:
+            inbox_list.insert(0, inbox_list.pop(inbox_list.index(sender)))
+        if sender not in inbox_list:
+            inbox_list.insert(0, sender)
 
     for message in sent_messages:
         receiver = message.receiver
-        inbox_list.insert(0, receiver)
+        if receiver in inbox_list:
+            inbox_list.insert(0, inbox_list.pop(inbox_list.index(receiver)))
+        if receiver not in inbox_list:
+            inbox_list.insert(0, receiver)
 
-    inbox_set = set(inbox_list)
-
-    return render_template("inbox.html", title="Inbox", inbox_set=inbox_set, length=len(inbox_set))
+    return render_template("inbox.html", title="Inbox", inbox_list=inbox_list, length=len(inbox_list))
 
 
 # Map room to a list of users
