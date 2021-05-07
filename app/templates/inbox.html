@@ -19,7 +19,7 @@
             <p>No messages at the moment.</p>
         </div>
         {% else %}
-        {% for user in inbox_set %}
+        {% for user in inbox_list %}
         <div class="message-inbox">
             <img src="../static/profile_pics/{{user.profile_pic}}" alt='Profile Picture' width='25' />
             <p><a href="{{ url_for('messaging', user=user.username)}}">{{user.username}}</a></p>
