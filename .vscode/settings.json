@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "python.pythonPath": "/usr/local/bin/python3",
     "python.linting.banditEnabled": false,
     "python.linting.pylintEnabled": true,
@@ -10,4 +11,7 @@
     "terminal.integrated.experimentalLinkProvider": false,
     "terminal.integrated.rendererType": "auto"
     
+=======
+    "git.ignoreLimitWarning": true
+>>>>>>> ae5e3314e1fc9c54b9186c08e79f7af9ceca0bd5
 }

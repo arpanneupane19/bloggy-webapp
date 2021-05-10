@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock %}
+{% block content %}
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel='stylesheet' href="{{url_for('static', filename='inbox.css')}}" />
+
+<div class='container'>
+
+    <div class="header">
+        <h2>Inbox</h2>
+    </div>
+
+    <div class="inbox-container">
+        {% if length == 0 %}
+        <div class="message-inbox">
+            <p>No messages at the moment.</p>
+        </div>
+        {% else %}
+        {% for user in inbox_list %}
+        <div class="message-inbox">
+            <img src="../static/profile_pics/{{user.profile_pic}}" alt='Profile Picture' width='25' />
+            <p><a href="{{ url_for('messaging', user=user.username)}}">{{user.username}}</a></p>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,3 +1,4 @@
+autopep8==1.5.6
 bcrypt==3.2.0
 bidict==0.21.2
 blinker==1.4
@@ -12,6 +13,7 @@ Flask-Login==0.5.0
 Flask-Mail==0.9.1
 Flask-SocketIO==5.0.1
 Flask-SQLAlchemy==2.5.1
+Flask-SSLify==0.1.5
 Flask-WTF==0.14.3
 gevent==21.1.2
 gevent-websocket==0.10.1
@@ -22,11 +24,14 @@ itsdangerous==1.1.0
 Jinja2==2.11.3
 MarkupSafe==1.1.1
 Pillow==8.2.0
+psycopg2-binary==2.8.6
+pycodestyle==2.7.0
 pycparser==2.20
 python-engineio==4.1.0
 python-socketio==5.2.1
 six==1.15.0
 SQLAlchemy==1.4.11
+toml==0.10.2
 Werkzeug==1.0.1
 WTForms==2.3.3
 zope.event==4.5.0
