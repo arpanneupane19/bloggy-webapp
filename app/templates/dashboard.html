@@ -44,13 +44,15 @@
 
                     {% if post.likes.count() == 1 %}
                     <p>
-                        <a href="{{url_for('view_likes', post_id=post.id)}}">{{post.likes.count()}} like</a>
+                        <a class='total-likes{{post.id}}'
+                            href="{{url_for('view_likes', post_id=post.id)}}">{{post.likes.count()}}
+                            like</a>
                     </p>
                     {% endif %}
 
 
                     {% if post.likes.count() == 0 %}
-                    <p style='cursor: initial; color: black;'>
+                    <p class='total-likes{{post.id}}' style='cursor: initial; color: black;'>
                         {{post.likes.count()}} likes
                     </p>
                     {% endif %}
@@ -58,7 +60,9 @@
 
                     {% if post.likes.count() > 1 %}
                     <p>
-                        <a href="{{url_for('view_likes', post_id=post.id)}}">{{post.likes.count()}} likes</a>
+                        <a class='total-likes{{post.id}}'
+                            href="{{url_for('view_likes', post_id=post.id)}}">{{post.likes.count()}}
+                            likes</a>
                     </p>
                     {% endif %}
 
@@ -87,13 +91,15 @@
 
             <div class="actions">
                 {% if current_user.has_liked_post(post) %}
-                <p>
-                    <a href="{{url_for('like_post', action='unlike', post_id=post.id)}}">Unlike</a>
-                </p>
+                <div class='like-unlike' action='unlike' post_id="{{ post.id }}"
+                    style="cursor: pointer; color: rgb(0,140,255)">
+                    <p class='toggle{{ post.id }}'>Unlike</p>
+                </div>
                 {% else %}
-                <p>
-                    <a href="{{url_for('like_post', action='like', post_id=post.id)}}">Like</a>
-                </p>
+                <div class='like-unlike' action='like' post_id="{{ post.id }}"
+                    style="cursor: pointer; color: rgb(0,140,255)">
+                    <p class='toggle{{ post.id }}'>Like</p>
+                </div>
                 {% endif %}
 
                 <p>
@@ -115,5 +121,7 @@
         {% endif %} {% else %} ... {% endif %} {% endfor %}
     </div>
 </div>
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="{{ url_for('static', filename='likes.js')}}"></script>
 
 {% endblock %}
