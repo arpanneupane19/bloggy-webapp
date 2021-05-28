@@ -69,7 +69,7 @@
 
     <div class="feed">
         {% for post in posts.items %}
-        <div class="post" post_id="{{post.id}}">
+        <div class="post">
             <div class="post-info">
                 <small><a href="{{url_for('user', username=post.author.username)}}">{{post.author.username}}</a></small>
                 <small>{{post.post_date.strftime('%m/%d/%Y') }}</small>
@@ -86,6 +86,7 @@
 
             <div class="post-actions">
                 <div class="post-stats-info">
+
                     {% if post.likes.count() == 1 %}
                     <p>
                         <a class='total-likes{{post.id}}'
@@ -93,11 +94,15 @@
                             like</a>
                     </p>
                     {% endif %}
+
+
                     {% if post.likes.count() == 0 %}
                     <p class='total-likes{{post.id}}' style='cursor: initial; color: black;'>
                         {{post.likes.count()}} likes
                     </p>
                     {% endif %}
+
+
                     {% if post.likes.count() > 1 %}
                     <p>
                         <a class='total-likes{{post.id}}'
@@ -105,16 +110,22 @@
                             likes</a>
                     </p>
                     {% endif %}
+
+
                     {% if post.commented.count() == 1 %}
                     <p>
                         <a href="{{url_for('view_comments', post_id=post.id)}}">{{post.commented.count()}} comment</a>
                     </p>
                     {% endif %}
+
+
                     {% if post.commented.count() == 0 %}
                     <p style='cursor: initial; color: black;'>
                         {{post.commented.count()}} comments
                     </p>
                     {% endif %}
+
+
                     {% if post.commented.count() > 1 %}
                     <p>
                         <a href="{{url_for('view_comments', post_id=post.id)}}">{{post.commented.count()}} comments</a>
@@ -125,16 +136,17 @@
 
             <div class="actions">
                 {% if current_user.has_liked_post(post) %}
-                <p class='like-unlike' action='unlike' post_id='{{post.id}}'
+                <div class='like-unlike' action='unlike' post_id="{{ post.id }}"
                     style="cursor: pointer; color: rgb(0,140,255)">
-                    Unlike
-                </p>
+                    <p class='toggle{{ post.id }}'>Unlike</p>
+                </div>
                 {% else %}
-                <p class='like-unlike' action='like' post_id='{{post.id}}'
+                <div class='like-unlike' action='like' post_id="{{ post.id }}"
                     style="cursor: pointer; color: rgb(0,140,255)">
-                    Like
-                </p>
+                    <p class='toggle{{ post.id }}'>Like</p>
+                </div>
                 {% endif %}
+
                 <p>
                     <a href="{{url_for('comment_on_post', post_id=post.id)}}">Comment</a>
                 </p>
