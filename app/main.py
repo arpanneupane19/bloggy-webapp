@@ -638,25 +638,20 @@ def follow_action(action, username):
     '''
 
     if action == 'follow' and current_user.has_followed_user(user):
-        flash('Already following this user.', 'info')
-        return redirect(url_for('user', username=username))
-
+        return jsonify({"message": "Already following this user."})
     if action == 'follow':
         if user.username == current_user.username:
-            flash('You cannot follow yourself!', 'info')
-            return redirect(url_for('user', username=username))
+            return jsonify({"message": "You can't follow yourself."})
         new_follower = Follower(followed=user, follower=current_user)
         db.session.add(new_follower)
         db.session.commit()
-        flash(f'Started following {username}', 'success')
-        return redirect(url_for('user', username=username))
 
     if action == 'unfollow':
         follower = Follower.query.filter_by(
             followed=user, follower=current_user).delete()
         db.session.commit()
-        flash(f'Unfollowed {username}', 'info')
-        return redirect(url_for('user', username=username))
+
+    return jsonify({"result": "success", "total_followers": user.followed.count(), "following": current_user.has_followed_user(user)})
 
 
 @app.route('/user/<username>/view-followers', methods=['GET', 'POST'])
