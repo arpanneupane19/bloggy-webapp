@@ -35,7 +35,7 @@
                 <p class='view-followers'>{{followers_total}} follower</p>
             </div>
             {% elif followers_total == 0 %}
-            <p>{{followers_total}} followers</p>
+            <p class='view-followers'>{{followers_total}} followers</p>
             {% elif followers_total > 1 %}
             <div class='followers-view'>
                 <p class='view-followers'>{{followers_total}} followers</p>
@@ -46,12 +46,14 @@
             {% if current_user.username == user.username %}
             {% else %}
             {% if current_user.has_followed_user(user) %}
-            <div class='follow-actions'><a
-                    href="{{ url_for('follow_action', action='unfollow', username=user.username)}}">Unfollow</a>
+            <div class='follow-actions' style='cursor: pointer; color: rgb(0,140,255)' action='unfollow'
+                username="{{ user.username }}">
+                <p class="follow-unfollow{{ user.username }}">Unfollow</p>
             </div>
             {% else %}
-            <div class='follow-actions'><a
-                    href="{{ url_for('follow_action', action='follow', username=user.username)}}">Follow</a>
+            <div class='follow-actions' style='cursor: pointer; color: rgb(0,140,255)' action='follow'
+                username="{{ user.username }}">
+                <p class="follow-unfollow{{ user.username }}">Follow</p>
             </div>
             {% endif %}
             {% endif %}
@@ -192,5 +194,4 @@
 </div>
 <script src="https://code.jquery.com/jquery.js"></script>
 <script src="{{url_for('static', filename='user.js')}}"></script>
-<script src="{{ url_for('static', filename='likes.js')}}"></script>
 {% endblock %}
