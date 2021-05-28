@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, url_for, redirect, flash, abort, session
+from flask import Flask, render_template, session, request, url_for, redirect, flash, abort, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
@@ -26,8 +26,8 @@ if 'DYNO' in os.environ:
     SSLify(app)
 
 # Secret KEY is different in production
-app.config['SECRET_KEY'] = 'thisissecretlol'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 socketio = SocketIO(app, cors_allowed_origins='*')
@@ -561,7 +561,7 @@ def comment_on_post(post_id):
         db.session.commit()
         flash("Your comment has been posted.", 'success')
         return redirect(url_for('view_comments', post_id=post_id))
-    return render_template('comment.html', form=form)
+    return render_template('comment.html', form=form, title='Comment')
 
 
 # Delete a comment
@@ -594,13 +594,12 @@ def view_comments(post_id):
 @app.route('/post/<int:post_id>/<action>', methods=['GET', 'POST'])
 @login_required
 def like_post(post_id, action):
-    post = Post.query.filter_by(id=post_id).first_or_404()
+    post = Post.query.filter_by(id=post_id).first()
     if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
         session['logged_in'] = True
         return redirect('/admin')
     if action == 'like' and current_user.has_liked_post(post):
         flash('Already liked post')
-        return redirect(request.referrer)
     if action == 'like':
         new_like = Like(liker=current_user, liked=post)
         db.session.add(new_like)
@@ -610,7 +609,7 @@ def like_post(post_id, action):
         like = Like.query.filter_by(liker=current_user, liked=post).delete()
         db.session.commit()
 
-    return redirect(request.referrer)
+    return jsonify({"result": "success", "total_likes": post.likes.count(), "liked": current_user.has_liked_post(post)})
 
 
 @app.route('/post/<int:post_id>/view-likes', methods=['GET', 'POST'])
