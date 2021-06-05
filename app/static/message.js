@@ -3,7 +3,7 @@ var socket = io();
 const chatMessages = document.querySelector('.messages');
 const messageField = document.getElementById('message');
 const send = document.getElementById('send');
-const sender = document.querySelector('.username').innerHTML
+const sender = document.querySelector('.id').innerHTML
 const receiver = document.querySelector('.receiver').innerHTML
 
 
@@ -25,7 +25,7 @@ function outputMessage(message) {
     addTime.innerText = message.time;
     const p = document.createElement('p')
     p.classList.add('message-body')
-    p.innerText = `${message.sender}: ${message.message}`;
+    p.innerText = `${message.sender_username}: ${message.message}`;
     div.append(addTime);
     div.appendChild(p);
     document.querySelector('.messages').appendChild(div)
@@ -33,7 +33,7 @@ function outputMessage(message) {
 
 socket.on('connect', () => {
     socket.emit('connectUser', {
-        username: sender,
+        id: sender,
         room: roomCode,
     })
     console.log(`${sender} has connected.`)
