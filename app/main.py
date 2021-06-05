@@ -744,7 +744,7 @@ def inbox():
 # Map room to a list of users
 room_to_users = dict({})
 
-# Map username to a room
+# Map user id to a room
 user_to_room = dict({})
 
 
@@ -752,19 +752,19 @@ user_to_room = dict({})
 def connect_user(data):
     # This is event is for joining the user into the room when they're trying to chat.
     room = data['room']
-    username = data['username']
+    user_id = data['id']
     global room_to_users
     global user_to_room
 
     if room in room_to_users.keys():
-        if username in room_to_users[room]:
+        if user_id in room_to_users[room]:
             print('exists')
         else:
-            room_to_users[room].append(username)
+            room_to_users[room].append(user_id)
     if not room in room_to_users.keys():
-        room_to_users[room] = [username]
+        room_to_users[room] = [user_id]
     join_room(room)
-    user_to_room[username] = room
+    user_to_room[user_id] = room
     print(f'room to users: {room_to_users}')
     print(f'user to room: {user_to_room}')
 
@@ -779,15 +779,16 @@ def connect_user(data):
 
 @socketio.on('disconnect')
 def disconnect_user():
-    username = current_user.username
-    room = user_to_room.get(username)
-
+    user_id = str(current_user.id)
+    room = user_to_room.get(user_id)
+    print(user_id)
+    print(room)
     # This is to remove the user(s) from the dictionary.
     '''
     I first check if they exist in the room or not,
     if they do, I will iterate through the array of users in the room,
     then for each index, if the value of the index is rqual to the current user's
-    username, then it will remove that user from the user_to_room dict. 
+    user id, then it will remove that user from the user_to_room dict. 
     This will remove the user's name from the array as well as remove their name 
     from the user_to_room dict.
     '''
@@ -797,16 +798,16 @@ def disconnect_user():
     how many people are in the room, if there are 0 people in the room, it will delete the room code
     from the room_to_users dictionary.
     '''
-    if username in room_to_users[room]:
+    if user_id in room_to_users[room]:
         for i in room_to_users[room]:
-            if i == username:
+            if i == user_id:
                 room_to_users[room].remove(i)
-                user_to_room.pop(username)
+                user_to_room.pop(user_id)
                 print(f'user to room: {user_to_room}')
         if len(room_to_users[room]) == 0:
             room_to_users.pop(room)
         print(f'room to users: {room_to_users}')
-    print(f"{username} has disconnected from room {room}")
+    print(f"{user_id} has disconnected from room {room}")
 
 
 @socketio.on('chat')
@@ -827,8 +828,8 @@ def chat(msg):
     read = False
 
     # Query the sender and receiver to see if they exist
-    receiver = User.query.filter_by(username=message_receiver).first()
-    sender = User.query.filter_by(username=message_sender).first()
+    receiver = User.query.filter_by(id=message_receiver).first()
+    sender = User.query.filter_by(id=message_sender).first()
 
     # Create new message object for adding message to db
     if (len(room_to_users[room])) == 1:
@@ -843,6 +844,8 @@ def chat(msg):
         db.session.add(new_message)
         db.session.commit()
     # send message to the people in the room.
+    msg['sender_username'] = sender.username
+    print(msg['sender_username'])
     send(msg, room=room)
 
 
@@ -860,7 +863,7 @@ def messaging(user):
         In Python, there was no comma, thus I had to insert one when joining the elements of the list.
         When they're joined, the new value is stored in the room_code variable which is used to query the db.
     '''
-    room = [user.username, current_user.username]
+    room = [str(user.id), str(current_user.id)]
     room.sort()
     room_code = ','.join(room)
 
