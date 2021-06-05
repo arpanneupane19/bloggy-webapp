@@ -33,10 +33,12 @@
             <div>
                 <p>{{comment.comment_body}}</p>
             </div><br>
+            {% if comment.commenter == current_user %}
             <div>
                 <a href="{{ url_for('delete_comment', comment_id=comment.id, post_id=comment.commented.id) }}">Delete
                     Comment</a>
             </div>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
