@@ -262,7 +262,7 @@ class ChangePasswordForm(FlaskForm):
         message="Invalid Email"), Length(max=50)], render_kw={"placeholder": "Email"})
     current_password = PasswordField(validators=[InputRequired(), Length(
         min=4)], render_kw={"placeholder": "Current Password"})
-    password = PasswordField(validators=[
+    new_password = PasswordField(validators=[
         InputRequired(), Length(min=4)], render_kw={"placeholder": "New Password (4 minimum)"})
     submit = SubmitField("Change Password")
 
@@ -456,8 +456,10 @@ def change_password():
             form.new_password.data).decode('utf-8')
         if form.email.data != current_user.email:
             flash("Invalid email")
+            return redirect(url_for('change_password'))
         if not bcrypt.check_password_hash(current_user.password, form.current_password.data):
             flash("Invalid password")
+            return redirect(url_for('change_password'))
         else:
             current_user.password = hashed_password
             db.session.commit()
