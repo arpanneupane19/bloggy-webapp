@@ -6,10 +6,13 @@ title %}{% endblock %} {% block content %}
 
 <div class="container">
     <h2>Change Password</h2>
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if
-    messages %} {% for category, message in messages %}
-    <div class="alert alert-{{ category }}">{{ message }}</div>
-    {% endfor %} {% endif %} {% endwith %}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
     <form method="POST" action="">
         {{ form.hidden_tag() }} {{ form.email }} {{ form.current_password }} {{
         form.new_password }} {{ form.submit }}
