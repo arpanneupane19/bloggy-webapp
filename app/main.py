@@ -153,7 +153,7 @@ class AdminModelView(ModelView):
             abort(403)
 
 
-admin = Admin(app, name='Bloggy Admin', template_mode='bootstrap3')
+admin = Admin(app, name='Bloggy Admin', template_mode='bootstrap4')
 admin.add_view(AdminModelView(User, db.session))
 admin.add_view(AdminModelView(Post, db.session))
 admin.add_view(AdminModelView(Comment, db.session))
@@ -328,6 +328,10 @@ def login():
             if bcrypt.check_password_hash(user.password, loginform.password.data):
                 login_user(user)
                 return redirect(url_for("dashboard"))
+            if not bcrypt.check_password_hash(user.password, loginform.password.data):
+                flash("Password is incorrect.")
+        if not user:
+            flash("Account doesn't exist.")
 
     if registerform.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(
@@ -433,7 +437,7 @@ def user(username):
         return redirect('/admin')
     user = User.query.filter_by(username=username).first()
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.filter_by(author=user).paginate(page=page, per_page=3)
+    posts = user.posts.paginate(page=page, per_page=3)
     followers = Follower.query.filter_by(followed=user).all()
     followers_total = 0
     for follower in followers:
@@ -686,7 +690,7 @@ def delete_account():
         session['logged_in'] = True
         return redirect('/admin')
     form = DeleteAccountForm()
-    posts = Post.query.filter_by(author=current_user).all()
+    posts = current_user.posts
     sent_messages = Message.query.filter_by(sender=current_user).all()
     received_messages = Message.query.filter_by(receiver=current_user).all()
     comments = Comment.query.filter_by(commenter=current_user).all()
