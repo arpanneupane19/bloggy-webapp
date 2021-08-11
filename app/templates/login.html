@@ -13,17 +13,10 @@
 				Login
 				<div class="credit">
 					Created by <a href="https://arpanneupane.com" target="__blank">Arpan Neupane</a>.
-				</div>
-				<div class="flash">
-					{% with messages = get_flashed_messages(with_categories=true) %}
-					{% if messages %}
-					{% for category, message in messages %}
-					<div class="alert alert-{{ category }}">
-						{{ message }}
-					</div>
-					{% endfor %}
-					{% endif %}
-					{% endwith %}
+					{% with messages = get_flashed_messages(with_categories=true) %} {% if
+					messages %} {% for category, message in messages %}
+					<div class="alert alert-{{ category }}">{{ message }}</div>
+					{% endfor %} {% endif %} {% endwith %}
 				</div>
 			</div>
 			<div class="title signup">
@@ -71,7 +64,9 @@
 				</form>
 			</div>
 		</div>
+
 	</div>
+
 	<script src="{{url_for('static', filename='login.js')}}"></script>
 </div>
 
