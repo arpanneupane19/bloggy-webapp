@@ -102,6 +102,9 @@ class User(db.Model, UserMixin):
         return User.query.get(user_id)
 
 
+
+
+
 class Post(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     post_title = db.Column(db.String(100), nullable=False)
@@ -310,7 +313,13 @@ def page_not_found(e):
 @app.route('/')
 @app.route('/home')
 def home():
+    users = User.query.all()
+    print(users)
+    for user in users:
+        user.email = user.email.lower()
+        user.username = user.username.lower()
 
+    db.session.commit()
     if current_user.is_authenticated:
         return redirect('dashboard')
     else:
