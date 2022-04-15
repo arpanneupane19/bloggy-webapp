@@ -1,4 +1,4 @@
-# Copyright ©️ Arpan Neupane 2021. All rights reserved.
+# Copyright ©️ Arpan Neupane 2022-23. All rights reserved.
 
 from app.main import app, socketio
 
