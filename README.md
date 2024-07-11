@@ -15,7 +15,8 @@ source venv/bin/activate && python3 wsgi.py
 Windows
 
 ```bash
-source venv/bin/activate && python wsgi.py
+python -m venv venv
+python3 wsgi.py
 ```
 
 ## Contributing
