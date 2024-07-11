@@ -22,12 +22,10 @@ import json
 from collections import deque
 
 app = Flask(__name__)
-if 'DYNO' in os.environ:
-    SSLify(app)
 
 # Secret KEY is different in production
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+app.config['SECRET_KEY'] = "6a05baa2c05d196e710115849f06f3cb1cee20fcb6f227aee03bc58cbd4eb6fb" # run "openssl rand -hex 32"
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 socketio = SocketIO(app, cors_allowed_origins='*')
@@ -147,7 +145,7 @@ class Message(db.Model):
 
 class AdminModelView(ModelView):
     def is_accessible(self):
-        if 'logged_in' in session:
+        if 'logged_in' in session and current_user.username == "arpanneupane19":
             return True
         else:
             abort(403)
@@ -373,9 +371,6 @@ def dashboard():
     following = Follower.query.filter_by(follower=current_user).all()
     total_posts = Post.query.all()
 
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
 
     return render_template("dashboard.html", posts=posts, title="My Dashboard", total_posts=len(total_posts), form=form)
 
@@ -400,9 +395,7 @@ def save_picture(form_profile_pic):
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
+
     posts = Post.query.filter_by(author=current_user).all()
     post_total = 0
     for i in posts:
@@ -431,9 +424,6 @@ def account():
 @app.route("/user/<username>")
 @login_required
 def user(username):
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
     user = User.query.filter_by(username=username).first()
     page = request.args.get('page', 1, type=int)
     posts = user.posts.paginate(page=page, per_page=3)
@@ -450,9 +440,7 @@ def user(username):
 @login_required
 def change_password():
     form = ChangePasswordForm()
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
+
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         hashed_password = bcrypt.generate_password_hash(
@@ -476,9 +464,7 @@ def change_password():
 @login_required
 def create_post():
     form = PostForm()
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
+
     if form.validate_on_submit():
         post = Post(post_title=form.post_title.data,
                     post_content=form.post_content.data, author=current_user)
@@ -493,10 +479,6 @@ def create_post():
 @app.route("/post/<int:post_id>")
 @login_required
 def post(post_id):
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
-
     # Get post
     post = Post.query.get_or_404(post_id)
     return render_template('postid.html', title=post.post_title, post=post)
@@ -507,9 +489,7 @@ def post(post_id):
 @login_required
 def update_post(post_id):
     form = PostForm()
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
+
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
@@ -530,9 +510,7 @@ def update_post(post_id):
 @login_required
 def delete_post(post_id):
     form = PostForm()
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
+
     post = Post.query.get_or_404(post_id)
     comments = Comment.query.filter_by(commented=post).all()
     likes = Like.query.filter_by(liked=post).all()
@@ -555,9 +533,7 @@ def delete_post(post_id):
 @login_required
 def comment_on_post(post_id):
     form = CommentForm()
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
+
     post = Post.query.get_or_404(post_id)
     if form.validate_on_submit():
         comment = Comment(commented=post, commenter=current_user,
@@ -573,9 +549,6 @@ def comment_on_post(post_id):
 @app.route('/post/<int:post_id>/<int:comment_id>/delete', methods=['GET', 'POST'])
 @login_required
 def delete_comment(post_id, comment_id):
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
     post = Post.query.get_or_404(post_id)
     comment = Comment.query.get_or_404(comment_id)
     db.session.delete(comment)
@@ -588,9 +561,7 @@ def delete_comment(post_id, comment_id):
 @app.route('/post/<int:post_id>/comments', methods=['GET', 'POST'])
 @login_required
 def view_comments(post_id):
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
+
     post = Post.query.get_or_404(post_id)
     comments = Comment.query.filter_by(commented_id=post_id).all()
     return render_template('view_comments.html', comments=comments, post=post, title=f'Comments of {post.post_title}', total=len(comments))
@@ -600,9 +571,7 @@ def view_comments(post_id):
 @login_required
 def like_post(post_id, action):
     post = Post.query.filter_by(id=post_id).first()
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
+
     if action == 'like' and current_user.has_liked_post(post):
         flash('Already liked post')
     if action == 'like':
@@ -620,9 +589,6 @@ def like_post(post_id, action):
 @app.route('/post/<int:post_id>/view-likes', methods=['GET', 'POST'])
 @login_required
 def view_likes(post_id):
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
     post = Post.query.filter_by(id=post_id).first_or_404()
     likes = Like.query.filter_by(liked_id=post_id).all()
     return render_template('likers.html', likes=likes, post=post, title=f'Likes of {post.post_title}')
@@ -631,9 +597,7 @@ def view_likes(post_id):
 @app.route('/<action>/user/<username>', methods=['GET', 'POST'])
 @login_required
 def follow_action(action, username):
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
+
     user = User.query.filter_by(username=username).first()
 
     ''' user variable is a user object. The username paramter in the url
@@ -662,9 +626,7 @@ def follow_action(action, username):
 @app.route('/user/<username>/view-followers', methods=['GET', 'POST'])
 @login_required
 def view_followers(username):
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
+
     user = User.query.filter_by(username=username).first()
     followers = Follower.query.filter_by(followed=user).all()
     return render_template('followers.html', user=user, followers=followers, title=f'Followers of {user.username}')
@@ -673,9 +635,7 @@ def view_followers(username):
 @app.route('/user/<username>/following', methods=['GET', 'POST'])
 @login_required
 def view_following(username):
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
+
     user = User.query.filter_by(username=username).first()
     following = Follower.query.filter_by(follower=user).all()
     return render_template('following.html', user=user, following=following, title=f'{user.username} is following')
@@ -685,9 +645,7 @@ def view_following(username):
 @app.route("/delete_account", methods=['GET', 'POST'])
 @login_required
 def delete_account():
-    if current_user.username == 'admin' and current_user.email == 'arpanneupane19@gmail.com':
-        session['logged_in'] = True
-        return redirect('/admin')
+
     form = DeleteAccountForm()
     posts = current_user.posts
     sent_messages = Message.query.filter_by(sender=current_user).all()
