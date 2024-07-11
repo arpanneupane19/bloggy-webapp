@@ -16,7 +16,7 @@ Windows
 
 ```bash
 python -m venv venv
-python3 wsgi.py
+python wsgi.py
 ```
 
 ## Contributing
