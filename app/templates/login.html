@@ -1,74 +1,64 @@
-{% extends "base.html" %}
-
-{% block title %}{% endblock %}
-{% block content %}
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel='stylesheet' href="{{url_for('static', filename='login.css')}}">
+{% extends "base.html" %} {% block title %}{% endblock %} {% block content %}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="{{url_for('static', filename='login.css')}}" />
 
 <div class="container">
-	<div class="wrapper">
-		<div class="title-text">
-			<div class="title login">
-				Login
-				<div class="credit">
-					Created by <a href="https://arpanneupane.com" target="__blank">Arpan Neupane</a>.
-					{% with messages = get_flashed_messages(with_categories=true) %} {% if
-					messages %} {% for category, message in messages %}
-					<div class="alert alert-{{ category }}">{{ message }}</div>
-					{% endfor %} {% endif %} {% endwith %}
-				</div>
-			</div>
-			<div class="title signup">
-				Sign Up
-			</div>
-		</div>
-		<div class="form-container">
-			<div class="slide-controls">
-				<input type='radio' name='slider' id='login' checked>
-				<input type='radio' name='slider' id='signup'>
-				<label for="login" class="slide login">Login</label>
-				<label for="signup" class="slide signup">Sign Up</label>
-				<div class="slide-tab"></div>
-			</div>
-			<div class="form-inner">
-				<form method="POST" action="" class="login">
-					{{loginform.hidden_tag()}}
-					<div class="field">
-						{{loginform.username}}
-					</div>
-					<div class="field">
-						{{loginform.password}}
-					</div>
-					<div class="pass-link"><a href="{{url_for('forgot_password')}}">Forgot Password?</a></div>
-					<div class="field">
-						<input type='submit' value='Login'>
-					</div>
-					<div class="signup-link">Don't have an account? <a href="#">Sign Up</a>.</div>
-				</form>
-				<form method="POST" action="" class="signup">
-					{{registerform.hidden_tag()}}
-					<div class="field">
-						{{registerform.username}}
-					</div>
-					<div class="field">
-						{{registerform.email}}
-					</div>
-					<div class="field">
-						{{registerform.password}}
-					</div>
-					<div class="field">
-						<input type='submit' value='Sign Up'>
-					</div>
-					<div class="login-link">Already have an account? <a href="{{url_for('login')}}">Log In</a>.</div>
-				</form>
-			</div>
-		</div>
+  <div class="wrapper">
+    <div class="title-text">
+      <div class="title login">
+        Login
+        <div class="credit">
+          Created by
+          <a href="https://arpanneupane.com" target="__blank">Arpan Neupane</a>.
+          {% with messages = get_flashed_messages(with_categories=true) %} {% if
+          messages %} {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %} {% endif %} {% endwith %}
+        </div>
+      </div>
+      <div class="title signup">Sign Up</div>
+    </div>
+    <div class="form-container">
+      <div class="slide-controls">
+        <input type="radio" name="slider" id="login" checked />
+        <input type="radio" name="slider" id="signup" />
+        <label for="login" class="slide login">Login</label>
+        <label for="signup" class="slide signup">Sign Up</label>
+        <div class="slide-tab"></div>
+      </div>
+      <div class="form-inner">
+        <form method="POST" action="" class="login">
+          {{loginform.hidden_tag()}}
+          <div class="field">{{loginform.username}}</div>
+          <div class="field">{{loginform.password}}</div>
+          <div class="pass-link">
+            <a href="{{url_for('forgot_password')}}">Forgot Password?</a>
+          </div>
+          <div class="field">
+            <input type="submit" value="Login" />
+          </div>
+          <div class="signup-link">
+            Don't have an account? <a href="#">Sign Up</a>.
+          </div>
+        </form>
+        <form method="POST" action="" class="signup">
+          {{registerform.hidden_tag()}}
+          <div class="field">{{registerform.username}}</div>
+          <div class="field">{{registerform.email}}</div>
+          <div class="field">{{registerform.password}}</div>
+          <div class="field">
+            <input type="submit" value="Sign Up" />
+          </div>
+          <div class="login-link">
+            Already have an account? <a href="{{url_for('login')}}">Log In</a>.
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
-	</div>
-
-	<script src="{{url_for('static', filename='login.js')}}"></script>
+  <script src="{{url_for('static', filename='login.js')}}"></script>
 </div>
-
 
 {% endblock %}
